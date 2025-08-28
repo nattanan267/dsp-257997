@@ -26,10 +26,6 @@ def seed_backlog(
     days: int = 30,
     start_date: str = "2024-04-01"
 ):
-    """
-    Pre-fill backlog ที่ realistic: ใช้สัดส่วนของ minutes_per_day
-    และไม่ให้เกิน capacity ของวันนั้น ๆ
-    """
     start = dt.datetime.strptime(start_date, "%Y-%m-%d").date()
     for p in providers.values():
         cap = float(getattr(p, "minutes_per_day", 0.0)) or 0.0
@@ -69,10 +65,6 @@ def estimate_slots_per_day_from_patient_data(df_patient):
 
 
 def simulate(patients: List["Patient"], providers: Dict[str, "Provider"], wait_time_model=None) -> List["Patient"]:
-    """
-    ใช้เฉพาะกรณี “policy ไม่ได้จองจริง”
-    เพราะฟังก์ชันนี้จะ clear_schedule() แล้วจองใหม่ทั้งหมด
-    """
     for provider in providers.values():
         provider.clear_schedule()
 
@@ -91,7 +83,6 @@ def simulate(patients: List["Patient"], providers: Dict[str, "Provider"], wait_t
         max_days = 365
         assigned = False
 
-        # พยายามจองกับ provider ที่เลือกก่อน
         for delta in range(max_days):
             assign_date = arrival + timedelta(days=delta)
             date_str = assign_date.strftime("%Y-%m-%d")
@@ -101,7 +92,6 @@ def simulate(patients: List["Patient"], providers: Dict[str, "Provider"], wait_t
                 assigned = True
                 break
 
-        # (optional) fallback ด้วยโมเดล
         if (not assigned) and wait_time_model and ("get_fallback_provider" in globals()):
             try:
                 fallback_provider, fallback_delta = get_fallback_provider(patient, providers, wait_time_model)  # noqa: F821

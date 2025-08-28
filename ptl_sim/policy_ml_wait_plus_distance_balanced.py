@@ -46,7 +46,6 @@ def ml_wait_plus_distance_balanced_policy(
 
             scored = []
             for prov in candidates:
-                # ตรวจ quota ก่อนคำนวณคะแนน (กันแต้มสวยแต่โควต้าเต็ม)
                 grp = "NHS" if str(prov.is_nhs).lower() == "true" else "Private"
                 if target_quota[(grp, patient.complexity)] <= 0:
                     continue
