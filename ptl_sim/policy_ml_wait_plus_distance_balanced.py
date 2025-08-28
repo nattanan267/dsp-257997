@@ -8,10 +8,6 @@ from ml_utils import load_wait_regressor, make_feature_row
 def ml_wait_plus_distance_balanced_policy(
     patients, providers, model_path: str, beta: float = 1.0, use_priority: bool = False
 ):
-    """
-    เลือก provider โดยใช้ score = predicted_wait_days + beta * travel_km
-    พร้อม balance NHS/Private ต่อ complexity และ GA -> NHS เท่านั้น
-    """
     model = load_wait_regressor(model_path)
 
     total_by_complexity = defaultdict(int)
@@ -32,7 +28,6 @@ def ml_wait_plus_distance_balanced_policy(
     provider_list = list(providers.values())
 
     for patient in patients:
-        # บังคับ GA -> NHS
         nhs_only = bool(getattr(patient, "need_ga", False))
 
         assigned = False

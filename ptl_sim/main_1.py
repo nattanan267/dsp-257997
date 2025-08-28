@@ -25,7 +25,6 @@ BASE_SEED = 42
 SCENARIO_ID = "base"   
 
 def _mean_ci_normal(vals, ci=0.95):
-    """คืน (mean, half_CI) ใช้ normal approx; ถ้า n<2 -> half_CI=0"""
     x = pd.to_numeric(pd.Series(vals), errors="coerce").dropna().values
     n = len(x)
     if n == 0:
@@ -39,10 +38,6 @@ def _mean_ci_normal(vals, ci=0.95):
     return m, half
 
 def aggregate_with_ci(df_summaries, by=["policy"]):
-    """
-    รวมผลสรุปข้าม replications → สร้างคอลัมน์ mean และ ci_half
-    KPI ที่ใช้: avg_wait, pct_seen_within_90_days, avg_travel_distance_km, avg_utilisation, avg_tariff_all
-    """
     kpis = [
         "avg_wait",
         "pct_seen_within_90_days",
@@ -120,7 +115,6 @@ policy_configs = [
     ),
 ]
 
-# ----- Run -----
 for use_priority in [False]:
     suffix = " +Priority" if use_priority else ""
     for name, policy_fn, description, simulate_after_policy in tqdm(

@@ -20,19 +20,15 @@ SCENARIO_ID = "base"
 FRONTIER_SCENARIO_ID_2 = "overall_share_frontier"
 OVERALL_TARGETS = [round(x, 1) for x in np.linspace(0.3, 0.9, 7)]  # 0.3..0.9
 FRONTIER_FALLBACK_2 = 60
-INCLUDE_GA_IN_TARGET = True   # True = รับ % ภาพรวมทั้งระบบตามที่อาจารย์ถาม
+INCLUDE_GA_IN_TARGET = True 
 
 rows_overall = []
 
-# ----- Load data -----
 df_patients = pd.read_csv(DATA_DIR / "patient_lat_long.csv", low_memory=False)
 df_providers = pd.read_csv(DATA_DIR / "provider_lat_long.csv")
 df_all = df_patients.copy()
 
 def _compute_overall_nhs_share_pct(df_result: pd.DataFrame) -> float:
-    """
-    % ไป NHS (รวม GA/non-GA) ในบรรดาเคสที่ถูก assign ภายใน 365 วัน
-    """
     if "assigned_is_nhs" not in df_result.columns:
         return float("nan")
     ok = df_result["wait_time"].notnull() & (pd.to_numeric(df_result["wait_time"], errors="coerce") <= 365)

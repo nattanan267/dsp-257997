@@ -443,10 +443,6 @@ def neutral_fee_policy(
             break
     return patients
 
-
-# =========================================================
-#                        ML Policy
-# =========================================================
 _ML_ASSIGN_MODEL = None
 def _get_assign_model(model_path: str):
     global _ML_ASSIGN_MODEL
@@ -466,12 +462,6 @@ def ml_balanced_policy(
     lookahead_days: int = 30,
     max_days_forward: int = 365,
 ) -> List["Patient"]:
-    """
-    ML v2 + capacity-aware; จองจริงใน provider.schedule
-    - strict rule (GA -> NHS เท่านั้น)
-    - คะแนน = predicted wait + λd*distance_z + λu*util_z
-    - ลองจองใน top-k ภายในหน้าต่าง lookahead_days
-    """
     if model_path is None:
         model_path = str(Path(DATA_DIR) / "models" / "ml_wait_regressor_v2.pkl")
     model = _get_assign_model(model_path)
@@ -575,7 +565,6 @@ def target_share_balanced_policy(
         d_nhs, ds_nhs, pr_nhs = _earliest_day_with_distance_tiebreak(nhs_provs, p, start, max_days_forward)
         d_pri, ds_pri, pr_pri = _earliest_day_with_distance_tiebreak(pri_provs, p, start, max_days_forward)
 
-        # ถ้าไม่มีที่ไหนรับได้ใน horizon ก็ข้ามไป (metrics จะนับเป็น unassigned)
         if pr_nhs is None and pr_pri is None:
             continue
 

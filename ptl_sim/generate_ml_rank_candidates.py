@@ -60,7 +60,6 @@ def build_ml_rank_candidates_v2(sim_outputs_pattern,
         raise ValueError(f"providers_csv missing columns: {missing}")
     df_prov = df_prov.rename(columns={"lat":"lat_prov", "long":"long_prov"})
 
-    # capacity guess (SlotsPerDay -> cases/week; ไม่มีให้ fallback 8 ชม./วัน)
     if "SlotsPerDay" in df_prov.columns:
         df_prov["SlotsPerDay"] = pd.to_numeric(df_prov["SlotsPerDay"], errors="coerce").fillna(0)
         slot_min = np.where(df_prov["is_nhs"]==1, 20.0, 15.0)
@@ -229,7 +228,7 @@ def build_ml_rank_candidates_v2(sim_outputs_pattern,
     if verbose:
         n_cases = df_out["case_id"].nunique()
         avg_cands = df_out.groupby("case_id")["provider"].nunique().mean()
-        print(f"✅ Saved {out_csv}")
+        print(f"Saved {out_csv}")
         print(f"- cases: {n_cases:,} | avg candidates per case: {avg_cands:.2f}")
         print(f"- shape: {df_out.shape}")
 

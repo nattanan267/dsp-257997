@@ -6,11 +6,9 @@ from typing import Tuple
 from config import DATA_DIR
 from ml_utils import load_wait_regressor, FEATURE_COLS, rank_eval_hit_rate_at_k
 
-# ---------- ปรับค่า blend ได้ตรงนี้ ----------
-LAMBDA_D = 0.20   # น้ำหนักระยะทาง (standardized)
-LAMBDA_U = 0.10   # น้ำหนัก utilization (standardized)
-USE_BLEND = True  # ถ้า False จะใช้ pred_wait_time ล้วน ๆ
-# ---------------------------------------------
+LAMBDA_D = 0.20   
+LAMBDA_U = 0.10   
+USE_BLEND = True  
 
 PROV_CSV = Path(DATA_DIR) / "provider_lat_long.csv"  # fallback capacity สำหรับเติม prov_*
 
@@ -28,7 +26,6 @@ def ensure_v2_capacity_features(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.copy()
 
-    # ----- Throughput (cases/week) จาก provider CSV -----
     if "prov_throughput_week" not in df.columns:
         prov = pd.read_csv(PROV_CSV, low_memory=False)
         if "is_nhs" in prov.columns:
@@ -51,7 +48,6 @@ def ensure_v2_capacity_features(df: pd.DataFrame) -> pd.DataFrame:
         prov_cap = prov[["provider","prov_throughput_week"]].rename(columns={"provider":"provider"})
         df = df.merge(prov_cap, on="provider", how="left")
 
-    # ----- Demand (cases/week) จาก candidates เอง -----
     if "prov_demand_week" not in df.columns:
         prov_counts = df.groupby("provider").size().rename("cnt").reset_index()
         weeks = 52
@@ -139,10 +135,9 @@ if __name__ == "__main__":
         df["rank_score"] = df["pred_wait_time"]
 
 
-    # (ใช้ pred_wait_time ภายใน rank_eval เพื่อเทียบกับ baseline; ถ้าจะใช้ rank_score ให้แก้ในฟังก์ชันเอง)
     hit1, mrr1 = rank_eval_hit_rate_at_k(
         model=model,
-        candidates_df=df.assign(pred_wait=df["rank_score"]),  # ส่งผ่านด้วยชื่อ pred_wait ภายในฟังก์ชัน
+        candidates_df=df.assign(pred_wait=df["rank_score"]),  
         k=1, case_col="case_id", provider_col="provider", actual_wait_col="actual_wait",
     )
     hit3, mrr3 = rank_eval_hit_rate_at_k(

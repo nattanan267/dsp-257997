@@ -8,20 +8,17 @@ from utils import simulate, seed_backlog
 from config import DATA_DIR
 
 
-# — ปรับ capacity สมจริงขึ้น (จูนได้)
-CAPACITY_SCALE = 1       # ลดความจุรวมของระบบลงให้เกิดคิว (0.5–0.8)
-AVG_MIN_NHS = 35           # นาทีต่อสล็อตของ NHS
-AVG_MIN_PRIVATE = 25       # นาทีต่อสล็อตของเอกชน
+CAPACITY_SCALE = 1      
+AVG_MIN_NHS = 35           
+AVG_MIN_PRIVATE = 25      
 
 
 def _to_date_iso(s):
-    """แปลงสตริงวันที่ให้เป็น YYYY-MM-DD (รับ dayfirst=True)"""
     dt = pd.to_datetime(s, dayfirst=True, errors="coerce")
     return None if pd.isna(dt) else dt.date().isoformat()
 
 
 def _to_bool_s(val) -> bool:
-    """รับค่าหลากหลายรูปแบบ → bool"""
     if isinstance(val, (int, float)):
         return bool(int(val))
     if isinstance(val, str):
@@ -33,14 +30,6 @@ def run_policy_scenario(
     df_patients, df_providers, policy_fn, policy_name="Baseline",
     use_priority=False, simulate_after_policy=False, wait_time_model=None
 ):
-    """
-    รัน policy หนึ่งรายการ:
-      - สร้าง Patient/Provider objects
-      - seed backlog ให้ทุก provider (สำคัญ!)
-      - เรียก policy (นโยบายจะจองจริง → ตั้ง wait_time)
-      - (ถ้าจำเป็น) simulate หลัง policy
-      - สร้าง df_result และ summary
-    """
     patients = []
     for _, row in df_patients.iterrows():
         arr_iso = _to_date_iso(row.get("start_clock_date"))
@@ -120,6 +109,6 @@ def run_policy_scenario(
 
     null_waits = df_result["wait_time"].isna().sum()
     if null_waits:
-        print(f"⚠️ {null_waits} patients have no wait_time in policy '{policy_name}'")
+        print(f"{null_waits} patients have no wait_time in policy '{policy_name}'")
 
     return df_result, summary

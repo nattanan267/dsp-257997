@@ -80,10 +80,9 @@ def build_wait_dataset_v2(
     # utilization
     df_feat["prov_utilization"] = (df_feat["prov_demand_week"] / df_feat["prov_throughput_week"]).replace([np.inf, -np.inf], np.nan).fillna(0.5)
 
-    # ---------- SAVE ----------
     df_feat.to_csv(output_csv, index=False)
     if verbose:
-        print(f"✅ Saved {output_csv} | rows={len(df_feat):,} providers={df_feat['assigned_provider'].nunique()}")
+        print(f"Saved {output_csv} | rows={len(df_feat):,} providers={df_feat['assigned_provider'].nunique()}")
         print(f"Columns: {list(df_feat.columns)}")
         print(df_feat[["prov_throughput_week", "prov_demand_week", "prov_utilization"]].describe())
 

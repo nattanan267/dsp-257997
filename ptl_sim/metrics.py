@@ -110,7 +110,6 @@ def compute_summary(
         "pct_seen_within_30_days": round(pct_within_30, 2),
         "pct_seen_within_90_days": round(pct_within_90, 2),
         "avg_travel_distance_km": round(avg_travel_distance, 2),
-        # utilisation รายงานเป็น %
         "avg_utilisation": round(avg_utilisation * 100, 2),
         "avg_wait_low": round(float(avg_wait_by_complexity.get("low", np.nan)), 2) if "low" in avg_wait_by_complexity else None,
         "avg_wait_medium": round(float(avg_wait_by_complexity.get("medium", np.nan)), 2) if "medium" in avg_wait_by_complexity else None,
@@ -161,10 +160,6 @@ def compute_summary(
 
 
 def calculate_provider_utilisation(providers: dict) -> dict:
-    """
-    คำนวณ utilisation เป็นค่าเฉลี่ยรายวันของ (minutes_used / minutes_per_day) ต่อ provider
-    และ clamp ให้อยู่ใน [0, 1] ป้องกัน overflow จาก backlog ใด ๆ
-    """
     utilisation = {}
     for name, provider in providers.items():
         cap = float(getattr(provider, "minutes_per_day", 0.0)) or 0.0
@@ -189,11 +184,6 @@ def export_csv(df: pd.DataFrame, path):
 
 
 def compute_realdata_summary(df_patient: pd.DataFrame, df_providers: pd.DataFrame) -> pd.DataFrame:
-    """
-    ใช้ข้อมูลจริง (recorded waits) เพื่อสร้าง baseline summary:
-    - map ให้ df_result มีคอลัมน์ที่ compute_summary ต้องใช้
-    - providers dict สำหรับคำนวณระยะทาง (lat/long)
-    """
     df = df_patient.copy()
     df = df[df["waiting_time"].notnull()].copy()
 
