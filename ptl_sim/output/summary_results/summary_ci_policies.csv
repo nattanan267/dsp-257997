@@ -1,0 +1,8 @@
+policy,avg_wait_mean,avg_wait_ci_half,pct_seen_within_90_days_mean,pct_seen_within_90_days_ci_half,avg_travel_distance_km_mean,avg_travel_distance_km_ci_half,avg_utilisation_mean,avg_utilisation_ci_half,avg_tariff_all_mean,avg_tariff_all_ci_half
+Baseline,112.09,0.02,33.72,0.01,58.35,0.03,59.84,0.02,801.21,0.0
+Complexity Balanced,85.62,0.02,52.06,0.02,59.29,0.05,60.01,0.02,801.29,0.0
+Fastest First,85.71,0.03,51.92,0.02,66.64,0.05,61.94,0.01,801.29,0.0
+Fee Biased,96.8,0.05,62.34,0.02,55.48,0.02,60.35,0.02,840.35,0.05
+ML Balanced (wait+dist+util),85.69,0.02,51.93,0.01,57.57,0.05,59.34,0.02,801.29,0.0
+Neutral Fee,85.75,0.03,51.91,0.02,54.56,0.08,60.48,0.02,801.29,0.0
+Shared Equal,85.75,0.02,51.91,0.01,68.27,0.1,60.03,0.01,801.29,0.0
